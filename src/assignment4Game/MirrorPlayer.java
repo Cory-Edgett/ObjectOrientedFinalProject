@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 import java.util.Observer;
 import java.awt.Point;

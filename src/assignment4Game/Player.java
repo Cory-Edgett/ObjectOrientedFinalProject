@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,12 +55,6 @@ public class Player extends Character {
 		new Thread(recallTask).start();
 	}
 	
-	public List<Command> getMoveHistory(){
-		return moveHistory;
-	}
-	
-
-	
 	private Task<Void> createRecallTask(){
 		Task<Void> task = new Task<Void>(){
 			@Override
@@ -86,8 +80,11 @@ public class Player extends Character {
 		};
 		task.setOnSucceeded(e -> {
 			GameController.getInstance().setPreviousState();
-			System.out.println(GameController.getInstance().getState());
 		});
 		return task;
+	}
+	// -------------Getter(s)--------------//
+	public List<Command> getMoveHistory(){
+		return moveHistory;
 	}
 }

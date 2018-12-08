@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 import java.net.URL;
 
@@ -24,6 +24,7 @@ public class Launcher extends Application {
 		primaryStage.setTitle("Assignment4");
 		primaryStage.setResizable(false);
 		GameController.getInstance().setGridPane(rootNode);
+		GameController.getInstance().setListener();
 		primaryStage.show();
 		
 

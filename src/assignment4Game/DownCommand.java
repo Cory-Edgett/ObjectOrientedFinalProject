@@ -1,25 +1,25 @@
-package command;
+package assignment4Game;
 
-public class UpCommand implements Command{
+public class DownCommand implements Command{
 	private Character character;
-	
-	
-	public UpCommand(Character character) {
+		
+	public DownCommand(Character character) {
 		this.character = character;
 	}
 
 	@Override
 	public void execute() {
-		character.moveUp();
-		
+		character.moveDown();
 	}
 	
 	@Override
 	public void reverse() {
-		character.moveDown();
+		character.moveUp();
 	}
 	
 	public void setCharacter(Character character) {
 		this.character = character;
 	}
+	
+	
 }

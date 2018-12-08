@@ -1,12 +1,8 @@
-package command;
+package assignment4Game;
 
-import java.awt.Point;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 
-import javafx.scene.layout.GridPane;
-
-public class GameController {
+public class GameController extends GridController {
 	
 
 
@@ -20,13 +16,10 @@ public class GameController {
 	private LeftCommand left;
 	private RightCommand right;
 	
-	private GridPane gridPane;
-	private HashMap<Point, Tile> gameGrid;
-	
 	private static GameController instance = null;
 	
 	public GameController() {
-		gameGrid = new HashMap<Point, Tile>();
+		super();
 		player = new Player();
 		mirrorPlayer = new MirrorPlayer();
 		state = GameStates.PLAY_STATE;
@@ -35,6 +28,8 @@ public class GameController {
 		up = new UpCommand(player);
 		left = new LeftCommand(player);
 		right = new RightCommand(player);
+		
+		
 	}
 	
 	public static GameController getInstance() {
@@ -42,30 +37,6 @@ public class GameController {
 			instance = new GameController();
 		}
 		return instance;
-	}
-	
-	public void setGridPane(GridPane gridPane) {
-		this.gridPane = gridPane;
-		initializeGameGrid();
-		setListener();
-		gridPane.requestFocus();
-
-	}
-	
-	public GridPane getGridPane() {
-		return gridPane;
-	}
-	
-	public void refreshGridPane() {
-		
-	}
-	
-	public void updateTile(Character character) {
-		Point position = character.getPosition();
-		System.out.println(position);
-		Tile tile = (Tile) gridPane.getChildren().get(position.x * GameConfig.MAX_X + position.y);
-		tile.toggleColor();
-		System.out.println(tile);
 	}
 	
 	public void setRecallState() {
@@ -100,18 +71,8 @@ public class GameController {
 		return state;
 	}
 	
-	private void initializeGameGrid() {
-		for(int x = GameConfig.MIN_X; x < GameConfig.MAX_X; x++) {
-			for(int y = GameConfig.MIN_Y; y < GameConfig.MAX_Y; y++) {
-				Tile tile = new Tile();
-				gridPane.add(tile, x, y);
-				gameGrid.put(new Point(x, y), new Tile());
-			}
-		}	
-	}
-	
-	private void setListener() {
-		gridPane.setOnKeyPressed(e -> {
+	public void setListener() {
+		this.getGridPane().setOnKeyPressed(e -> {
 			if(state == GameStates.RECALL_STATE)
 				return;
 			
