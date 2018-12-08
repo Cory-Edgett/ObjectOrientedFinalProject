@@ -1,24 +1,21 @@
 package command;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.concurrent.Task;
 
 public class Player extends Character {
-	private static final int SPEED = 1;
-	private static final int MAX_MOVES = 50;
 	
 	private List<Command> moveHistory;
 	private final Player me;
 	
 	public Player() {
-		super(Player.SPEED);
-		this.setPosition(11, 11);
+		super(GameConfig.SPEED);
+		this.setPosition(GameConfig.MID_X, GameConfig.MID_Y);
 		moveHistory = new ArrayList<Command>();
 		me = this;
 	}
@@ -26,13 +23,15 @@ public class Player extends Character {
 	public void move(Command command) {
 		try {
 			command.execute();
+			this.setChanged();
+			this.notifyObservers();
 		} catch(GameCollisionException e) {
 			return;
 		}
 		moveHistory.add(command);
 
 		GameController.getInstance().updateTile(this);
-		if(moveHistory.size() > MAX_MOVES) {
+		if(moveHistory.size() > GameConfig.MAX_MOVES) {
 			recall();
 		}
 	}
@@ -42,25 +41,53 @@ public class Player extends Character {
 		new Thread(recallTask).start();
 	}
 	
+	public void recall(Callable<Void> callback) {
+		Task<Void> recallTask = createRecallTask();
+		recallTask.setOnSucceeded(e->{
+				try {
+					GameController.getInstance().setPreviousState();
+					callback.call();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			});
+		new Thread(recallTask).start();
+	}
+	
+	public List<Command> getMoveHistory(){
+		return moveHistory;
+	}
+	
+
+	
 	private Task<Void> createRecallTask(){
 		Task<Void> task = new Task<Void>(){
 			@Override
 			protected Void call() throws Exception {
 				GameController.getInstance().setRecallState();
+				
+				//this notify tells the observers to switch the color of the tile they are currently on
+				setChanged();
+				notifyObservers();
+				
 				Collections.reverse(moveHistory);
 				for(Command command : moveHistory) {
 					GameController.getInstance().updateTile(me);
 					command.reverse();
-					Thread.sleep(SPEED * 20);
+					setChanged();
+					notifyObservers();
+					Thread.sleep(GameConfig.RECALL_SLEEP);
 				}
 				moveHistory.removeAll(moveHistory);
-				GameController.getInstance().setPlayState();
 				return null;
 			}
 		
 		};
-		
+		task.setOnSucceeded(e -> {
+			GameController.getInstance().setPreviousState();
+			System.out.println(GameController.getInstance().getState());
+		});
 		return task;
 	}
-	
 }

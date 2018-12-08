@@ -13,25 +13,25 @@ public abstract class Character extends Observable{
 		
 	public void moveLeft() throws GameCollisionException {
 		int newX = position.x - SPEED;
-		if(newX < GameController.MIN_X) throw new GameCollisionException();
+		if(newX < GameConfig.MIN_X) throw new GameCollisionException();
 		position.move(newX, position.y);
 	}
 	
 	public void moveRight() throws GameCollisionException {
 		int newX = position.x + SPEED;
-		if(newX >= GameController.MAX_X) throw new GameCollisionException();
+		if(newX >= GameConfig.MAX_X) throw new GameCollisionException();
 		position.move(newX, position.y);
 	}
 	
 	public void moveUp() throws GameCollisionException {
 		int newY = position.y - SPEED;
-		if(newY < GameController.MIN_Y) throw new GameCollisionException();
+		if(newY <= GameConfig.MIN_Y) throw new GameCollisionException();
 		position.move(position.x, newY);
 	}
 	
 	public void moveDown() throws GameCollisionException {
 		int newY = position.y + SPEED;
-		if(newY > GameController.MAX_Y) throw new GameCollisionException();
+		if(newY > GameConfig.MAX_Y) throw new GameCollisionException();
 		position.move(position.x, newY);
 	}
 	

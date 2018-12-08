@@ -1,20 +1,17 @@
 package command;
 
 import java.awt.Point;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.Callable;
 
 import javafx.scene.layout.GridPane;
 
 public class GameController {
-	public final static int MIN_X = 0;
-	public final static int MAX_X = 21;
-	public final static int MIN_Y = 0;
-	public final static int MAX_Y = 21;
+	
 
 
 	private GameStates state;
+	private GameStates previousState;
 	private Player player;
 	private MirrorPlayer mirrorPlayer;
 	
@@ -32,8 +29,6 @@ public class GameController {
 		gameGrid = new HashMap<Point, Tile>();
 		player = new Player();
 		mirrorPlayer = new MirrorPlayer();
-		
-		player.addObserver(mirrorPlayer);
 		state = GameStates.PLAY_STATE;
 		
 		down = new DownCommand(player);
@@ -68,32 +63,46 @@ public class GameController {
 	public void updateTile(Character character) {
 		Point position = character.getPosition();
 		System.out.println(position);
-		Tile tile = (Tile) gridPane.getChildren().get(position.x * MAX_X + position.y);
+		Tile tile = (Tile) gridPane.getChildren().get(position.x * GameConfig.MAX_X + position.y);
 		tile.toggleColor();
 		System.out.println(tile);
 	}
 	
 	public void setRecallState() {
-		if(state == GameStates.RECALL_STATE) return;
-		toggleState();
+		previousState = state;
+		state = GameStates.RECALL_STATE;
 	}
 	
 	public void setPlayState() {
-		if(state == GameStates.PLAY_STATE) return;
-		toggleState();
+		state = GameStates.PLAY_STATE;
 	}
 	
-	private void toggleState() {
+	private Void handleMirrorState() {
 		if(state == GameStates.PLAY_STATE) {
-			state = GameStates.RECALL_STATE;
+			setMirrorState();
+			player.addObserver(mirrorPlayer);
 		} else {
-			state = GameStates.PLAY_STATE;
+			setPlayState();
+			player.deleteObservers();
 		}
+		return null;
+	}
+	
+	public void setPreviousState() {
+		state = previousState;
+	}
+	
+	public void setMirrorState() {
+		state = GameStates.MIRROR_STATE;
+	}
+	
+	public GameStates getState() {
+		return state;
 	}
 	
 	private void initializeGameGrid() {
-		for(int x = MIN_X; x < MAX_X; x++) {
-			for(int y = MIN_Y; y < MAX_Y; y++) {
+		for(int x = GameConfig.MIN_X; x < GameConfig.MAX_X; x++) {
+			for(int y = GameConfig.MIN_Y; y < GameConfig.MAX_Y; y++) {
 				Tile tile = new Tile();
 				gridPane.add(tile, x, y);
 				gameGrid.put(new Point(x, y), new Tile());
@@ -107,6 +116,14 @@ public class GameController {
 				return;
 			
 			switch(e.getCode()) {
+				case SPACE:
+					player.recall(new Callable<Void>(){
+						@Override
+						public Void call() throws Exception {
+							return handleMirrorState();
+						}
+					});
+					break;
 				case KP_RIGHT:
 				case RIGHT:
 					player.move(right);
