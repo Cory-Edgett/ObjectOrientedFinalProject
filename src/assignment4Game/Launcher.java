@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 import java.net.URL;
 
@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
@@ -25,6 +24,7 @@ public class Launcher extends Application {
 		primaryStage.setTitle("Assignment4");
 		primaryStage.setResizable(false);
 		GameController.getInstance().setGridPane(rootNode);
+		GameController.getInstance().setListener();
 		primaryStage.show();
 		
 

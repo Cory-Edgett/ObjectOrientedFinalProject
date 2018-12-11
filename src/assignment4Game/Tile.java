@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 import javafx.scene.layout.Pane;
 public class Tile extends Pane {
 	private final static int FILLED = 1;
@@ -10,16 +10,23 @@ public class Tile extends Pane {
 	
 	public Tile() {
 		super();
-		fill = EMPTY;
-		setColor(EMPTY_COLOR);
+		setEmpty();
 	}
 	
 	public void toggleColor() {
 		if(fill == EMPTY) {
-			fill = FILLED;
-			setColor(FILL_COLOR);
+			setFilled();
 			return;
 		}
+		setEmpty();
+	}
+	
+	public void setFilled() {
+		fill = FILLED;
+		setColor(FILL_COLOR);
+	}
+	
+	public void setEmpty() {
 		fill = EMPTY;
 		setColor(EMPTY_COLOR);
 	}

@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 public class GameCollisionException extends RuntimeException {
 

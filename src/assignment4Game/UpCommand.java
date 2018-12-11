@@ -1,21 +1,22 @@
-package command;
+package assignment4Game;
 
-public class RightCommand implements Command{
+public class UpCommand implements Command{
 	private Character character;
 	
-	public RightCommand(Character character) {
+	
+	public UpCommand(Character character) {
 		this.character = character;
 	}
 
 	@Override
 	public void execute() {
-		character.moveRight();
+		character.moveUp();
 		
 	}
 	
 	@Override
 	public void reverse() {
-		character.moveLeft();
+		character.moveDown();
 	}
 	
 	public void setCharacter(Character character) {

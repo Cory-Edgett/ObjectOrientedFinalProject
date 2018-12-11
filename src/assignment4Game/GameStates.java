@@ -1,4 +1,4 @@
-package command;
+package assignment4Game;
 
 public enum GameStates {
 	PLAY_STATE,
